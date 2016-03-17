@@ -18,50 +18,133 @@ before = (date, item) -->
 after = (date, item) -->
   item.date > date
 
+get-quoted-string = (str) ->
+  # look for same char as first char
+  opener = str.0
+  str = str.substr 1
+  return get-until-closer str, opener
+
+make-not = (f) ->
+  return -> not f it
+
+make-or = (a, b) ->
+  return -> (a it) or (b it)
+
+get-paren-string = (str) ->
+  str = str.substr 1 # first char should be "("
+  return get-until-closer str, ")"
+
+get-until-closer = (str, closer) ->
+  # first character is ' or "
+  # find non-escaped match
+  out = ''
+  while str.length > 0
+    char = str.0
+    str = str.substr 1
+    if char == closer # done!
+      return [out, str]
+    if char == "\\" # note this can throw
+      out += str.0
+      str = str.substr 1
+      continue
+    out += char
+
 philtre-core = (query) ->
   conds = []
   while query.length > 0
+    # subquery
+    if query.0 == "("
+      [word, query] = get-paren-string query
+      conds.push philtre-core word
+      continue
+
     if query.0 == \# # this is a tag
-      word = query.split(' ').0.substr 1
-      query = query.substr 2 + word.length
+      query = query.substr 1 # get rid of #
+      if -1 < query.index-of ' '
+        word = query.substr 0, query.index-of ' '
+      else
+        word = query
+      query = query.substr 1 + word.length
       conds.push tagged word
       continue
 
-    /*
-    if query.0 == '"' or query.0 == "'" # this is a quoted string
-      word = ''
-      opener = query.0
-      query.shift!
-      while query.length > 0
-        char = query.shift!
-        if char == opener then break # found closing quote
-        if char == "\\" # escape
-          # this will blow up if the last character is a backslash, that's fine
-          word += query.shift!
-          continue
-        word += char
-      # now word is the quoted string
-      conds.push contains word
-      query = query.trim!
-      continue
-    */
-
     if -1 < query.index-of ":" # control word
-      token = query.split(' ').0
-      [key, value] = token.split ':'
-      switch key
-      | \is, \has => conds.push has value
-      | \before => conds.push before value
-      | \after => conds.push after value
-      default conds.push -> false
-      query = query.substr (key.length + value.length + 1)
+      # key cannot be quoted
+      # but value *can*
+      key = query.substr 0, query.index-of ":"
+      query = query.substr 1 + query.index-of ":"
+      if query.0 == \" or query.0 == \'
+        [value, query] = get-quoted-string query
+      else
+        if -1 < query.index-of ' '
+          value = query.substr 0, query.index-of ' '
+        else
+          value = query
+        query = query.substr 1 + value.length
+
+      conds.push switch key
+      | \is, \has => has value
+      | \before => before value
+      | \after => after value
+      default -> false
+      continue
+
+    if query.0 == "-" # treat as sugar for NOT
+      conds.push "NOT"
+      query = query.substr 1
       continue
 
     # default - just a hit
-    word = query.split(' ').0
-    query = query.substr 1 + word.length
+    if query.0 == \" or query.0 == \'
+      [word, query] = get-quoted-string query
+    else
+      if -1 < query.index-of ' '
+        word = query.substr 0, query.index-of ' '
+      else
+        word = query
+      query = query.substr 1 + word.length
+
+    # check for special vanilla words
+    if word == "AND" then continue # no-op
+    if word == "OR" or word == "NOT"
+      # fix after everything's loaded
+      conds.push word
+      continue
+
+    #TODO figure out why this is happening and make it stop
+    if word == ''
+      continue
+
+    # completely normal word, hit on it
+    console.log "normal word: " + word
     conds.push contains word
-  return conds
+    continue
+
+  # clean up special tokens
+  conds-out = []
+  ii = 0
+  while ii < conds.length
+    # first check for or
+    if conds[ii + 1] == "OR"
+      conds-out.push make-or conds[ii], conds[ii + 2]
+      console.log conds[ii].to-string!
+      console.log conds[ii + 2].to-string!
+      ii += 3
+      continue
+
+    if conds[ii] == "NOT"
+      conds-out.push make-not conds[ii + 1]
+      ii += 2
+      continue
+
+    # normal
+    conds-out.push conds[ii]
+    ii += 1
+
+  return ->
+    for f in conds-out
+      if not f it then return false
+    return true
 
 export philtre = (query) ->
   # input is a plaintext string
@@ -81,8 +164,4 @@ export philtre = (query) ->
   # array of boolean functions to be AND-ed
   conds = philtre-core query
 
-  return (items) ->
-    items.filter ->
-      for f in conds
-        if not f it then return false
-      return true
+  return -> it.filter conds
