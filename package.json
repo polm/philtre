@@ -21,6 +21,9 @@
     "query",
     "filter"
   ],
+  "bin": {
+    "philtre": "./bin/philtre"
+  },
   "author": "23",
   "license": "WTFPL",
   "bugs": {
