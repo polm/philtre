@@ -58,6 +58,11 @@ philtre-core = (query) ->
       conds.push philtre-core word
       continue
 
+    if query.0 == "-" # treat as sugar for NOT
+      conds.push "NOT"
+      query = query.substr 1
+      continue
+
     if query.0 == \# # this is a tag
       query = query.substr 1 # get rid of #
       if -1 < query.index-of ' '
@@ -68,9 +73,9 @@ philtre-core = (query) ->
       conds.push tagged word
       continue
 
-    if -1 < query.index-of ":" # control word
-      # key cannot be quoted
-      # but value *can*
+    if query.match /^[A-z]*:/ # control word
+      # key cannot be quoted, must be ASCII letters
+      # value can be quoted and contain anything
       key = query.substr 0, query.index-of ":"
       query = query.substr 1 + query.index-of ":"
       if query.0 == \" or query.0 == \'
@@ -87,11 +92,6 @@ philtre-core = (query) ->
       | \before => before value
       | \after => after value
       default -> false
-      continue
-
-    if query.0 == "-" # treat as sugar for NOT
-      conds.push "NOT"
-      query = query.substr 1
       continue
 
     # default - just a hit
