@@ -12,7 +12,7 @@ You can try this out using the included command line script and sample data file
 
 To try it out yourself:
 
-    mkdir fiddle && cd fiddle && npm install philtre
+    mkdir fiddle && cd fiddle && git clone https://github.com/polm/philtre.git
     ./bin/philtre "#restaurants" title < data/dampfkraft.json 
     ./bin/philtre "is:location #restaurants" title < data/dampfkraft.json 
     ./bin/philtre "not is:location #restaurants" title < data/dampfkraft.json 
