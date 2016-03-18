@@ -16,9 +16,12 @@ philtre-from-stdin = ->
   # read stdin, assume one json object per line
   # print objects that match command line
   read-stdin-as-lines-then ->
-    query = process.argv.slice(2).join ' '
+    query = process.argv.2
+    key = process.argv.3
     objects = it.map JSON.parse
-    philtre(query, objects).map -> console.log JSON.stringify it
+    philtre(query, objects).map (out) ->
+      if key then out = out[key]
+      console.log JSON.stringify out
 
 philtre-from-stdin!
 
