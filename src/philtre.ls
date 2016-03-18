@@ -105,10 +105,11 @@ philtre-core = (query) ->
       query = query.substr 1 + word.length
 
     # check for special vanilla words
-    if word == "AND" then continue # no-op
-    if word == "OR" or word == "NOT"
+    ucw = word.to-upper-case!
+    if ucw == "AND" then continue # no-op
+    if ucw == "OR" or ucw == "NOT"
       # fix after everything's loaded
-      conds.push word
+      conds.push ucw
       continue
 
     #TODO figure out why this is happening and make it stop
