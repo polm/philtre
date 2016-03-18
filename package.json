@@ -1,6 +1,6 @@
 {
   "name": "philtre",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A friendly search syntax for objects.",
   "main": "lib/philtre.js",
   "devDependencies": {
