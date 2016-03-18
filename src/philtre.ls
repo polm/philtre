@@ -12,6 +12,9 @@ contains = (string, item) -->
 has = (field, item) -->
   item?[field]
 
+check-field = (field, value, item) -->
+  -1 < item?[field]?to-string!.index-of value
+
 before = (date, item) -->
   item.date < date
 
@@ -91,7 +94,7 @@ philtre-core = (query) ->
       | \is, \has => has value
       | \before => before value
       | \after => after value
-      default -> false
+      default check-field key, value
       continue
 
     # default - just a hit
