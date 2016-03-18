@@ -143,7 +143,7 @@ philtre-core = (query) ->
       if not f it then return false
     return true
 
-export philtre = (query) ->
+export philtre = (query, items) -->
   # input is a plaintext string
   # output is a function that can be used to filter a list of objects
 
@@ -161,4 +161,4 @@ export philtre = (query) ->
   # array of boolean functions to be AND-ed
   conds = philtre-core query
 
-  return -> it.filter conds
+  items.filter conds
