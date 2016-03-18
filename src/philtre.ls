@@ -116,7 +116,6 @@ philtre-core = (query) ->
       continue
 
     # completely normal word, hit on it
-    console.log "normal word: " + word
     conds.push contains word
     continue
 
@@ -127,8 +126,6 @@ philtre-core = (query) ->
     # first check for or
     if conds[ii + 1] == "OR"
       conds-out.push make-or conds[ii], conds[ii + 2]
-      console.log conds[ii].to-string!
-      console.log conds[ii + 2].to-string!
       ii += 3
       continue
 
