@@ -2,10 +2,15 @@
 tagged = (tag, item) -->
   -1 < item.tags?.index-of tag
 
-# TODO lowercase match
 contains = (string, item) -->
+  # smart case - insenstive unless caps in search
+  option = \i
+  if string.match /[A-Z]/
+    option = ''
+
+  reg = new RegExp(string, option)
   for key of item
-    if -1 < item[key].index-of string
+    if item[key]?.to-string?!.match reg
       return true
   return false
 

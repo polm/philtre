@@ -1,6 +1,8 @@
 tap = require \tap
 philtre = require("../lib/philtre").philtre
 
+
+process.exit!
 data =
   * title: "My first entry"
     date: "2016-01-16T23:25:54+09:00"
@@ -74,5 +76,15 @@ tap.equal philtre('#restaurants', dk-data).length, 7
 tap.equal philtre('#restaurants or food', dk-data).length, 10
 tap.equal philtre('is:location #restaurants or food', dk-data).length, 7
 tap.equal philtre('#restaurants or food is:location', dk-data).length, 7
+
+cap-test =
+  * title: "one Two"
+  * title: "alpha beta"
+  * title: "ThreE four"
+
+tap.equal philtre('two', cap-test).length, 1
+tap.equal philtre('Two', cap-test).length, 1
+tap.equal philtre('three', cap-test).length, 1
+tap.equal philtre('Three', cap-test).length, 0
 
 
