@@ -1,8 +1,6 @@
 tap = require \tap
 philtre = require("../lib/philtre").philtre
 
-
-process.exit!
 data =
   * title: "My first entry"
     date: "2016-01-16T23:25:54+09:00"
