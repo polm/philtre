@@ -64,11 +64,19 @@
   tap.equal(result.length, 2);
   result = philtre('-#fish', data);
   tap.equal(result.length, 1);
-  process.exit(1);
   result = philtre('special:howdy', data);
   tap.equal(result.length, 1);
   result = philtre('special:hello', data);
   tap.equal(result.length, 0);
+  result = philtre(":sort:body", data);
+  tap.equal(result.length, 3);
+  tap.equal(result[0].body, "blah blah blah piffle poffle");
+  result = philtre(":sortr:body", data);
+  tap.equal(result.length, 3);
+  tap.equal(result[0].body, "words go here lots of words");
+  result = philtre(":sortr:date :limit:1", data);
+  tap.equal(result.length, 1);
+  tap.equal(result[0].date, "2016-03-16T23:25:54+09:00");
   fs = require('fs');
   dkData = fs.readFileSync("./data/dampfkraft.json", "utf-8").split("\n").filter(function(it){
     return (it != null ? it.length : void 8) > 0;
@@ -76,9 +84,9 @@
   tap.equal(philtre('#tokyo', dkData).length, 1);
   tap.equal(philtre('food', dkData).length, 7);
   tap.equal(philtre('#restaurants', dkData).length, 7);
-  tap.equal(philtre('#restaurants or food', dkData).length, 10);
-  tap.equal(philtre('is:location #restaurants or food', dkData).length, 7);
-  tap.equal(philtre('#restaurants or food is:location', dkData).length, 7);
+  tap.equal(philtre('#restaurants OR food', dkData).length, 10);
+  tap.equal(philtre(':is:location #restaurants OR food', dkData).length, 7);
+  tap.equal(philtre('#restaurants OR food :is:location', dkData).length, 7);
   capTest = [
     {
       title: "one Two"

@@ -101,23 +101,3 @@ before = (date, item) -->
 
 after = (date, item) -->
   item.date > date
-
-
-data = [
-  * title: "booboo"
-    tags: <[ cat dog panda ]>
-    date: \200
-  * title: "lalala"
-    tags: <[ cat fish dog ]>
-    date: \100
-  * title: "ozanari"
-    tags: <[ panda elf dog ]>
-    date: \300
-]
-
-console.log philtre "\#elf", data
-console.log philtre ":before:250", data
-console.log philtre ":sort:title", data
-console.log philtre ":sortr:title", data
-console.log philtre ":sortr:date", data
-console.log philtre ":sortr:date :limit:1", data
