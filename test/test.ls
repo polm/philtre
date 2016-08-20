@@ -20,33 +20,33 @@ result = philtre('#fish', data)
 tap.equal result.length, 2
 tap.equal result.0.title, "My first entry"
 tap.equal result.1.title, "My third entry"
-result = philtre('before:2016-03-01', data)
+result = philtre(':before:2016-03-01', data)
 tap.equal result.length, 2
-result = philtre('after:2016-03-01', data)
+result = philtre(':after:2016-03-01', data)
 tap.equal result.length, 1
-result = philtre('#fish after:2016-03-01', data)
+result = philtre('#fish :after:2016-03-01', data)
 tap.equal result.length, 1
-result = philtre('#fish #cat after:2016-03-01', data)
+result = philtre('#fish #cat :after:2016-03-01', data)
 tap.equal result.length, 1
-result = philtre('#red after:2016-03-01', data)
+result = philtre('#red :after:2016-03-01', data)
 tap.equal result.length, 0
-result = philtre('is:special', data)
+result = philtre(':is:special', data)
 tap.equal result.length, 1
-result = philtre('is:special #cat', data)
+result = philtre(':is:special #cat', data)
 tap.equal result.length, 1
-result = philtre('is:special #red', data)
+result = philtre(':is:special #red', data)
 tap.equal result.length, 0
 result = philtre('"hen ham"', data)
 tap.equal result.length, 1
 result = philtre('("hen ham") #red', data)
 tap.equal result.length, 1
-result = philtre('(is:special)', data)
+result = philtre('(:is:special)', data)
 tap.equal result.length, 1
 result = philtre('(#cat)', data)
 tap.equal result.length, 2
-result = philtre('(is:special #cat)', data)
+result = philtre('(:is:special #cat)', data)
 tap.equal result.length, 1
-result = philtre('(is:special #cat) #fish', data)
+result = philtre('(:is:special #cat) #fish', data)
 tap.equal result.length, 1
 result = philtre('NOT #fish', data)
 tap.equal result.length, 1
@@ -63,6 +63,16 @@ tap.equal result.length, 1
 result = philtre('special:hello', data)
 tap.equal result.length, 0
 
+result = philtre ":sort:body", data
+tap.equal result.length, 3
+tap.equal result[0].body, "blah blah blah piffle poffle"
+result = philtre ":sortr:body", data
+tap.equal result.length, 3
+tap.equal result[0].body, "words go here lots of words"
+result = philtre ":sortr:date :limit:1", data
+tap.equal result.length, 1
+tap.equal result[0].date, "2016-03-16T23:25:54+09:00"
+
 fs = require \fs
 dk-data = fs.read-file-sync("./data/dampfkraft.json", "utf-8")
   .split("\n")
@@ -71,9 +81,9 @@ dk-data = fs.read-file-sync("./data/dampfkraft.json", "utf-8")
 tap.equal philtre('#tokyo', dk-data).length, 1
 tap.equal philtre('food', dk-data).length, 7
 tap.equal philtre('#restaurants', dk-data).length, 7
-tap.equal philtre('#restaurants or food', dk-data).length, 10
-tap.equal philtre('is:location #restaurants or food', dk-data).length, 7
-tap.equal philtre('#restaurants or food is:location', dk-data).length, 7
+tap.equal philtre('#restaurants OR food', dk-data).length, 10
+tap.equal philtre(':is:location #restaurants OR food', dk-data).length, 7
+tap.equal philtre('#restaurants OR food :is:location', dk-data).length, 7
 
 cap-test =
   * title: "one Two"
