@@ -45,23 +45,23 @@ tag
   = "#" val:string { return {tag: val}; }
 
 builtin
-  = ":" head:[A-z] tail:[A-z0-9]* ":" val:value { return {builtin: (head + tail.join("")), val: val}; }
+  = ":" head:[A-z] tail:[A-z0-9]* ":" val:string { return {builtin: (head + tail.join("")), val: val}; }
 
 keyword
   = head:[A-z] tail:[A-z0-9]* ":" val:value { return {key: (head + tail.join("")), val: val}; }
 
 value
-  = '"' inner:innerval '"' { return inner; } / string
+  = '"' inner:innerval '"' { return inner; } / ss:string { return {literal: ss} }
   
 innerval 
   = 
+    rr:range { return rr; } /
     ">"  val:string { return {greaterthan: val}; } /
     ">=" val:string { return {greaterthaneq: val}; } /
     "<"  val:string { return {lessthan: val}; } /
-    "<=" val:string { return {lessthaneq: val}; } /
-    range
+    "<=" val:string { return {lessthaneq: val}; } 
 
 /* this doesn't work. */
 range
-  = low:string ".." high:string { return {and: [{greaterthaneq: low}, {lessthaneq: high}]}; }
+  = low:string ws ".." ws high:string { return {and: [{greaterthaneq: low}, {lessthaneq: high}]}; }
 

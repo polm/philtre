@@ -55,16 +55,18 @@ funkify-term = (term) ->
     return -> not (funkify-term term.not) it
   if term.literal
     return contains term.literal
+  if term.and
+    return make-and term.and
   if term.or
     return make-or term.or
   if term.key and term.val
-    return check-field term.key, term.val
+    return check-field term.key, funkify-term term.val
   if term.tag
     return tagged term.tag
   if term.lessthan
     return -> it < term.lessthan
   if term.lessthaneq
-    return -> it <= term.lessthan
+    return -> it <= term.lessthaneq
   if term.greaterthan
     return -> it > term.greaterthan
   if term.greaterthaneq
@@ -93,8 +95,8 @@ contains = (string, item) -->
       return true
   return false
 
-check-field = (field, value, item) -->
-  -1 < item?[field]?to-string!.index-of value
+check-field = (field, func, item) -->
+  func item[field]
 
 before = (date, item) -->
   item.date < date
