@@ -1,11 +1,12 @@
 {
   "name": "philtre",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "A friendly search syntax for objects.",
   "main": "lib/philtre.js",
   "devDependencies": {
     "tap": "^5.0.0",
-    "livescript": "^1.4.0"
+    "livescript": "^1.4.0",
+    "pegjs": "^0.10.0"
   },
   "scripts": {
     "test": "make && tap test/*js"
