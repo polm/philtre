@@ -65,7 +65,7 @@
   result = philtre('-#fish', data);
   tap.equal(result.length, 1);
   result = philtre('special:howdy', data);
-  tap.equal(result.length, 1);
+  tap.equal(result.length, 0);
   result = philtre('special:hello', data);
   tap.equal(result.length, 0);
   result = philtre(":sort:body", data);
@@ -77,6 +77,11 @@
   result = philtre(":sortr:date :limit:1", data);
   tap.equal(result.length, 1);
   tap.equal(result[0].date, "2016-03-16T23:25:54+09:00");
+  result = philtre('date:">2016-02-01"', data);
+  tap.equal(result.length, 2);
+  result = philtre('date:"2016-02-01 .. 2016-03-01"', data);
+  tap.equal(result.length, 1);
+  tap.equal(result[0].title, "My second entry");
   fs = require('fs');
   dkData = fs.readFileSync("./data/dampfkraft.json", "utf-8").split("\n").filter(function(it){
     return (it != null ? it.length : void 8) > 0;
