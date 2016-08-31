@@ -2,7 +2,10 @@ parser = require \../lib/parser.js
 
 export philtre = (query, items) -->
   query = query.trim!
-  func = make-func parser.parse query
+  if query == '' # default is to accept everything
+    func = -> return true
+  else
+    func = make-func parser.parse query
   output = items.filter func
   if func.sort
     output = sort-by func.sort.rev, func.sort.field, output

@@ -82,6 +82,8 @@
   result = philtre('date:"2016-02-01 .. 2016-03-01"', data);
   tap.equal(result.length, 1);
   tap.equal(result[0].title, "My second entry");
+  result = philtre('', data);
+  tap.equal(result.length, 3);
   fs = require('fs');
   dkData = fs.readFileSync("./data/dampfkraft.json", "utf-8").split("\n").filter(function(it){
     return (it != null ? it.length : void 8) > 0;

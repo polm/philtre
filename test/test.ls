@@ -80,6 +80,9 @@ result = philtre 'date:"2016-02-01 .. 2016-03-01"', data
 tap.equal result.length, 1
 tap.equal result.0.title, "My second entry"
 
+result = philtre '', data
+tap.equal result.length, 3
+
 fs = require \fs
 dk-data = fs.read-file-sync("./data/dampfkraft.json", "utf-8")
   .split("\n")
