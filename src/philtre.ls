@@ -93,6 +93,9 @@ contains = (string, item) -->
     option = ''
 
   reg = new RegExp(string, option)
+  if item?.match # if it's a string test it directly
+    return item.match reg
+
   for key of item
     if item[key]?.to-string?!.match reg
       return true

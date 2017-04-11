@@ -59,9 +59,11 @@ tap.equal result.length, 2
 result = philtre('-#fish', data)
 tap.equal result.length, 1
 result = philtre('special:howdy', data)
-tap.equal result.length, 0
+tap.equal result.length, 1
 result = philtre('special:hello', data)
 tap.equal result.length, 0
+result = philtre('special:howdy.doo', data)
+tap.equal result.length, 1
 
 result = philtre ":sort:body", data
 tap.equal result.length, 3
